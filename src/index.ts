@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { ErrorRequestHandler } from 'express';
 import { connect } from './db/connect';
 import { Product } from './db/Models/Product';
 import { Category } from './db/Models/Category';
@@ -6,6 +6,35 @@ import { Order, Status } from './db/Models/Order';
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.get('/api/products', async (req, res, next) => {
+  try {
+    if (typeof req.query.category === 'string' && req.query.category) {
+      const categoryId = req.query.category;
+      const categoryIdOne = await Category.findByPk(categoryId);
+      res.send(await categoryIdOne?.getProducts());
+      return;
+    }
+
+    const products = await Product.findAll();
+    res.send(products);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/api/categories', async (req, res) => {
+  const categories = await Category.findAll();
+  // categories.map((cat) => console.log(cat.toJSON()));
+  res.send(categories);
+});
+
+const errorMiddleware: ErrorRequestHandler = (err, req, res, _) => {
+  res.status(500);
+  res.send({ message: err.message });
+};
+
+app.use(errorMiddleware);
 
 app.listen(port, async () => {
   await connect();

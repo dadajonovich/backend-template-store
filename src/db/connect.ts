@@ -6,9 +6,6 @@ import { Relations } from './Relations';
 
 export const connect = async () => {
   try {
-    // Product.belongsTo(Category);
-    // Category.hasMany(Product);
-
     Relations.oneIn(Category, Product);
     Relations.manyToMany(Order, Product, '_OrderProduct');
     await sequelize.authenticate();
