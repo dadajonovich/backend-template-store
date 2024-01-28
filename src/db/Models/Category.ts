@@ -5,7 +5,7 @@ import {
   InferCreationAttributes,
   Model,
 } from 'sequelize';
-import { sequelize } from './sequelize';
+import { sequelize } from '../sequelize';
 
 export class Category extends Model<
   InferAttributes<Category>,
