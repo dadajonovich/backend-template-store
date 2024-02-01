@@ -33,7 +33,7 @@ export class Product extends Model<
   declare title: string;
   declare price: number;
 
-  declare CategoryId: ForeignKey<Category['id']>;
+  declare CategoryId: ForeignKey<Category['id'] | null>;
   declare Category?: NonAttribute<Category>;
   declare createCategory: BelongsToCreateAssociationMixin<Category>;
   declare setCategory: BelongsToSetAssociationMixin<Category, Category['id']>;

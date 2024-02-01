@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Category } from '../db/Models/Category';
+import { Category } from '../db/models/Category';
 
 export class CategoryController {
   public static async getCategories(

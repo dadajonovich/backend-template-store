@@ -1,8 +1,8 @@
 import express, { ErrorRequestHandler } from 'express';
 import { connect } from './db/connect';
-import { Product } from './db/Models/Product';
-import { Category } from './db/Models/Category';
-import { Order, Status } from './db/Models/Order';
+import { Product } from './db/models/Product';
+import { Category } from './db/models/Category';
+import { Order, Status } from './db/models/Order';
 import { ProductController } from './controllers/ProductController';
 import { CategoryController } from './controllers/CategoryController';
 
@@ -16,8 +16,7 @@ app.get('/api/categories', CategoryController.getCategories);
 app.post('/api/products', ProductController.addProduct);
 
 const errorMiddleware: ErrorRequestHandler = (err, req, res, _) => {
-  res.status(500);
-  res.send({ message: err.message });
+  res.status(500).send({ message: err.message });
 };
 
 app.use(errorMiddleware);

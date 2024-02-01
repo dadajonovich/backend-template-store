@@ -1,7 +1,7 @@
 import { sequelize } from './sequelize';
-import { Product } from './Models/Product';
-import { Category } from './Models/Category';
-import { Order } from './Models/Order';
+import { Product } from './models/Product';
+import { Category } from './models/Category';
+import { Order } from './models/Order';
 import { Relations } from './Relations';
 
 export const connect = async () => {
