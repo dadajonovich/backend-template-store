@@ -64,12 +64,15 @@ Product.init(
     },
     imageUrl: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     title: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     price: {
       type: DataTypes.FLOAT,
+      allowNull: false,
     },
   },
   { sequelize, timestamps: false }

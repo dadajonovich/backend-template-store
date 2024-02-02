@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { Category } from '../db/models/Category';
 import { Product } from '../db/models/Product';
@@ -6,11 +6,12 @@ import { ProductService } from '../services/ProductService';
 import { ProductCreationDto, ProductDto } from '../view/ProductDto';
 
 export class ProductController {
-  public static async getProducts(
-    req: Request<ParamsDictionary, ProductDto[], void, { category: string }>,
-    res: Response<ProductDto[]>,
-    next: NextFunction
-  ): Promise<void> {
+  public static getProducts: RequestHandler<
+    ParamsDictionary,
+    ProductDto[],
+    void,
+    { category: string }
+  > = async (req, res, next) => {
     try {
       if (typeof req.query.category === 'string' && req.query.category) {
         const categoryId = req.query.category;
@@ -27,20 +28,25 @@ export class ProductController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  public static async addProduct(
-    req: Request<ParamsDictionary, ProductDto, ProductCreationDto>,
-    res: Response<ProductDto>
-  ): Promise<void> {
-    const { title, imageUrl, price, CategoryId } = req.body;
-    const newProduct = await Product.create({
-      title: title.trim(),
-      imageUrl,
-      price,
-      CategoryId,
-    });
+  public static addProduct: RequestHandler<
+    ParamsDictionary,
+    ProductDto,
+    ProductCreationDto
+  > = async (req, res, next) => {
+    try {
+      const { title, imageUrl, price, CategoryId } = req.body;
+      const newProduct = await ProductService.createProduct({
+        title: title.trim(),
+        imageUrl,
+        price,
+        CategoryId,
+      });
 
-    res.status(200).send(ProductService.modelToDto(newProduct));
-  }
+      res.status(200).send(ProductService.modelToDto(newProduct));
+    } catch (error) {
+      next(error);
+    }
+  };
 }
