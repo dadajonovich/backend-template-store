@@ -1,22 +1,17 @@
 import express, { ErrorRequestHandler } from 'express';
 import { connect } from './db/connect';
-import { Product } from './db/models/Product';
-import { Category } from './db/models/Category';
-import { Order, Status } from './db/models/Order';
 import { ProductController } from './controllers/ProductController';
 import { CategoryController } from './controllers/CategoryController';
-import { ProductDto } from './view/ProductDto';
-import { json } from 'sequelize';
 
 const app = express();
 app.use(express.json());
 const port = process.env.PORT || 3000;
 
-app.get('/api/products', ProductController.getProducts);
+app.get('/api/products', ProductController.getAll);
 
-app.get('/api/categories', CategoryController.getCategories);
+app.get('/api/categories', CategoryController.getAll);
 
-app.post('/api/products', ProductController.addProduct);
+app.post('/api/products', ProductController.add);
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Not found' });

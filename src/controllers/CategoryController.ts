@@ -1,13 +1,27 @@
-import { Request, Response } from 'express';
-import { Category } from '../db/models/Category';
+import { RequestHandler } from 'express';
+import { CategoryCreationDto, CategoryDto } from '../view/CategoryDto';
+import { CategoryService } from '../services/CategoryService';
 
 export class CategoryController {
-  public static async getCategories(
-    req: Request,
-    res: Response
-  ): Promise<void> {
-    const categories = await Category.findAll();
+  public static add: RequestHandler<void, CategoryCreationDto, CategoryDto> =
+    async (req, res, next) => {
+      try {
+        const { title } = req.body;
+        const newCategory = await CategoryService.create({
+          title: title.trim(),
+        });
+        res.status(200).send(newCategory);
+      } catch (error) {
+        next(error);
+      }
+    };
+
+  public static getAll: RequestHandler<void, CategoryDto[]> = async (
+    req,
+    res
+  ) => {
+    const categories = await CategoryService.getAll();
     // categories.map((cat) => console.log(cat.toJSON()));
-    res.send(categories);
-  }
+    res.status(200).send(categories);
+  };
 }

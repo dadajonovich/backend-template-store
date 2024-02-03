@@ -33,7 +33,7 @@ export class Order extends Model<
   declare name: string;
   declare adress: string;
   declare phone: string;
-  declare status: Status;
+  declare status: CreationOptional<Status>;
 
   declare Products?: NonAttribute<Product[]>;
 
@@ -73,15 +73,19 @@ Order.init(
     },
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     adress: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     phone: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     status: {
       type: DataTypes.ENUM(...Object.values(Status)),
+      defaultValue: Status.pending,
     },
   },
   { sequelize, timestamps: false }
