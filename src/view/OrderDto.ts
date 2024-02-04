@@ -10,6 +10,6 @@ export type OrderDto = {
   products: ProductDto[];
 };
 
-export type OrderCreationDto = Omit<OrderDto, 'id' | 'status'> & {
+export type OrderCreationDto = Omit<OrderDto, 'id' | 'status' | 'products'> & {
   productIds: number[];
 };

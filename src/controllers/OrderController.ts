@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import { OrderCreationDto, OrderDto } from '../view/OrderDto';
-import { Order } from '../db/models/Order';
+import { OrderService } from '../services/OrderService';
 
 export class OrderController {
   public static add: RequestHandler<void, OrderDto, OrderCreationDto> = async (
@@ -10,21 +10,15 @@ export class OrderController {
   ) => {
     try {
       const { name, adress, phone, productIds } = req.body;
-      const newOrder = await Order.create({
-        name,
+
+      const newOrder = await OrderService.create({
+        name: name.trim(),
         adress,
         phone,
+        productIds,
       });
 
-      const products = await newOrder.setProducts(products);
-
-      res.status(200).send({
-        id: newOrder.id,
-        name: newOrder.name,
-        adress: newOrder.adress,
-        phone: newOrder.phone,
-        status: newOrder.status,
-      });
+      res.status(200).send(newOrder);
     } catch (error) {
       next(error);
     }
