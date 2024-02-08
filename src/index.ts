@@ -1,9 +1,16 @@
 import express, { ErrorRequestHandler } from 'express';
+import cors from 'cors';
 import { connect } from './db/connect';
 import { ProductController } from './controllers/ProductController';
 import { CategoryController } from './controllers/CategoryController';
 
 const app = express();
+app.use(
+  cors({
+    credentials: true,
+    origin: true,
+  })
+);
 app.use(express.json());
 const port = process.env.PORT || 3000;
 
@@ -12,6 +19,8 @@ app.get('/api/products', ProductController.getAll);
 app.get('/api/categories', CategoryController.getAll);
 
 app.post('/api/products', ProductController.add);
+
+app.post('/api/categories', CategoryController.add);
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Not found' });
