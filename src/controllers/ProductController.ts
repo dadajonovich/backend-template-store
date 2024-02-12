@@ -2,20 +2,19 @@ import { RequestHandler } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ProductService } from '../services/ProductService';
 import { ProductCreationDto, ProductDto } from '../view/ProductDto';
+import { QueryProducts } from '../services/ProductService';
 
 export class ProductController {
   public static getAll: RequestHandler<
     ParamsDictionary,
     ProductDto[],
     void,
-    { category: string }
+    QueryProducts
   > = async (req, res, next) => {
     try {
-      if (req.query.category) {
-        const categoryId = req.query.category;
-        const products = await ProductService.getAllByCategoryId(
-          Number(categoryId)
-        );
+      if (req.query.categoryId) {
+        const categoryId = req.query.categoryId;
+        const products = await ProductService.getAllBy(Number(categoryId));
         res.status(200).send(products);
         return;
       }
@@ -30,9 +29,10 @@ export class ProductController {
   public static add: RequestHandler<void, ProductDto, ProductCreationDto> =
     async (req, res, next) => {
       try {
-        const { title, imageUrl, price, CategoryId } = req.body;
+        const { title, description, imageUrl, price, CategoryId } = req.body;
         const newProduct = await ProductService.create({
           title: title.trim(),
+          description: description.trim(),
           imageUrl,
           price,
           CategoryId,

@@ -31,6 +31,7 @@ export class Product extends Model<
   declare id: CreationOptional<number>;
   declare imageUrl: string;
   declare title: string;
+  declare description: string;
   declare price: number;
 
   declare CategoryId: ForeignKey<Category['id'] | null>;
@@ -67,6 +68,10 @@ Product.init(
       allowNull: false,
     },
     title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    description: {
       type: DataTypes.STRING,
       allowNull: false,
     },
