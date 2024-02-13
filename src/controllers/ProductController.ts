@@ -12,14 +12,7 @@ export class ProductController {
     QueryProducts
   > = async (req, res, next) => {
     try {
-      if (req.query.categoryId) {
-        const categoryId = req.query.categoryId;
-        const products = await ProductService.getAllBy(Number(categoryId));
-        res.status(200).send(products);
-        return;
-      }
-
-      const products = await ProductService.getAll();
+      const products = await ProductService.getAllBy(req.query);
       res.status(200).send(products);
     } catch (error) {
       next(error);

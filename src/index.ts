@@ -28,6 +28,7 @@ app.use((req, res) => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const errorMiddleware: ErrorRequestHandler = (err, req, res, next) => {
+  console.log(err);
   res.status(500).send({ message: err.message });
 };
 
@@ -37,12 +38,7 @@ app.listen(port, async () => {
   await connect();
 });
 
-/* const product = {
-  title: 'bottle',
-  imageUrl: 'https://ir-2.ozone.ru/s3/multimedia-4/wc1000/6757126564.jpg',
-  price: 666,
-  CategoryId: 1,
-};
+/* 
 
 async () => {
   console.log(
@@ -61,3 +57,35 @@ async () => {
     }).then((r) => r.json())
   );
 }; */
+
+// const categories = ['Бутылки', 'Посуда', 'Разное'];
+
+// const addCategoryInDb = async (category) => {
+//   console.log(
+//     await fetch('http://localhost:3000/api/categories', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json;charset=utf-8',
+//       },
+//       body: JSON.stringify({ title: category }),
+//     }).then((r) => r.json())
+//   );
+// };
+
+// const addDb = async (item) => {
+//   console.log(
+//     await fetch('http://localhost:3000/api/products', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json;charset=utf-8',
+//       },
+//       body: JSON.stringify({
+//         title: item.title,
+//         description: item.description,
+//         imageUrl: item.thumbnail,
+//         price: item.price,
+//         CategoryId: Math.floor(Math.random() * 3 + 1),
+//       }),
+//     }).then((r) => r.json())
+//   );
+// };

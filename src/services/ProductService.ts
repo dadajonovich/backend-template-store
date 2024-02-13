@@ -1,12 +1,14 @@
-import { Category } from '../db/models/Category';
+import { FindOptions, InferAttributes, Op, WhereOptions } from 'sequelize';
 import { Product } from '../db/models/Product';
 import { ProductCreationDto, ProductDto } from '../view/ProductDto';
 
-type SortId = 'sortBy' | 'priceAsc' | 'priceDesc' | 'abcAsc' | 'abcDesc';
+type SortId = 'priceAsc' | 'priceDesc' | 'abcAsc' | 'abcDesc';
 
 export type QueryProducts = {
   categoryId?: number;
   sortId?: SortId;
+  search?: string;
+  page?: number;
 };
 
 export class ProductService {
@@ -25,34 +27,59 @@ export class ProductService {
     return newProduct;
   }
 
-  public static async getAllBy(query: QueryProducts) {
-    const { categoryId, sortId } = query;
-    if (categoryId && !sortId) {
-      const category = await Category.findByPk(categoryId);
-      if (category === null) throw new Error('Category not found!');
-      const products = await category.getProducts();
-      return products.map(ProductService.modelToDto);
+  public static async getAllBy(query: QueryProducts = {}) {
+    const products = await Product.findAll(this.queryToFindOptions(query));
+    return products;
+  }
+
+  private static queryToWhereOptions(query: QueryProducts) {
+    const { categoryId, search } = query;
+    const whereOptions: WhereOptions<InferAttributes<Product>> = {};
+    if (categoryId) {
+      whereOptions.CategoryId = categoryId;
     }
-    if (!categoryId && sortId) {
-      switch (sortId) {
-        case 'sortBy':
-          break;
+    if (search) {
+      whereOptions.title = {
+        [Op.substring]: search,
+      };
+    }
 
-        case 'priceAsc':
-          break;
+    return whereOptions;
+  }
 
-        case 'priceDesc':
-          break;
+  private static queryToFindOptions(query: QueryProducts) {
+    const { sortId, page } = query;
+    const findOptions: FindOptions<InferAttributes<Product>> = {
+      where: this.queryToWhereOptions(query),
+      limit: 6,
+    };
+    if (page) {
+      findOptions.offset = page ? (page - 1) * 6 : undefined;
+    }
 
-        case 'abcAsc':
-          break;
+    if (sortId) {
+      findOptions.order = [this.sortIdToOrder(sortId)];
+    }
 
-        case 'abcDesc':
-          break;
+    return findOptions;
+  }
 
-        default:
-          break;
-      }
+  private static sortIdToOrder(sortId: SortId): [string, 'ASC' | 'DESC'] {
+    switch (sortId) {
+      case 'priceAsc':
+        return ['price', 'ASC'];
+
+      case 'priceDesc':
+        return ['price', 'DESC'];
+
+      case 'abcAsc':
+        return ['title', 'ASC'];
+
+      case 'abcDesc':
+        return ['title', 'DESC'];
+
+      default:
+        throw new Error(sortId satisfies never);
     }
   }
 }
