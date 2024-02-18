@@ -1,6 +1,10 @@
 import { FindOptions, InferAttributes, Op, WhereOptions } from 'sequelize';
 import { Product } from '../db/models/Product';
-import { ProductCreationDto, ProductDto } from '../view/ProductDto';
+import {
+  ProductCreationDto,
+  ProductDto,
+  ProductsDto,
+} from '../view/ProductDto';
 
 type SortId = 'priceAsc' | 'priceDesc' | 'abcAsc' | 'abcDesc';
 
@@ -9,6 +13,7 @@ export type QueryProducts = {
   sortId?: SortId;
   search?: string;
   page?: number;
+  limit?: number;
 };
 
 export class ProductService {
@@ -27,9 +32,13 @@ export class ProductService {
     return newProduct;
   }
 
-  public static async getAllBy(query: QueryProducts = {}) {
-    const products = await Product.findAll(this.queryToFindOptions(query));
-    return products;
+  public static async getAllBy(
+    query: QueryProducts = {}
+  ): Promise<ProductsDto> {
+    const products = await Product.findAndCountAll(
+      this.queryToFindOptions(query)
+    );
+    return { products: products.rows, totalCount: products.count };
   }
 
   private static queryToWhereOptions(query: QueryProducts) {
@@ -40,7 +49,7 @@ export class ProductService {
     }
     if (search) {
       whereOptions.title = {
-        [Op.substring]: search,
+        [Op.iLike]: `%${search}%`,
       };
     }
 
@@ -48,13 +57,13 @@ export class ProductService {
   }
 
   private static queryToFindOptions(query: QueryProducts) {
-    const { sortId, page } = query;
+    const { sortId, page, limit } = query;
     const findOptions: FindOptions<InferAttributes<Product>> = {
       where: this.queryToWhereOptions(query),
-      limit: 6,
+      limit: limit,
     };
-    if (page) {
-      findOptions.offset = page ? (page - 1) * 6 : undefined;
+    if (page && limit) {
+      findOptions.offset = page ? (page - 1) * limit : undefined;
     }
 
     if (sortId) {

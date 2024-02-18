@@ -7,4 +7,9 @@ export type ProductDto = {
   CategoryId: number | null;
 };
 
+export type ProductsDto = {
+  products: ProductDto[];
+  totalCount: number;
+};
+
 export type ProductCreationDto = Omit<ProductDto, 'id'>;

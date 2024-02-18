@@ -1,13 +1,17 @@
 import { RequestHandler } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ProductService } from '../services/ProductService';
-import { ProductCreationDto, ProductDto } from '../view/ProductDto';
+import {
+  ProductCreationDto,
+  ProductDto,
+  ProductsDto,
+} from '../view/ProductDto';
 import { QueryProducts } from '../services/ProductService';
 
 export class ProductController {
   public static getAll: RequestHandler<
     ParamsDictionary,
-    ProductDto[],
+    ProductsDto,
     void,
     QueryProducts
   > = async (req, res, next) => {
