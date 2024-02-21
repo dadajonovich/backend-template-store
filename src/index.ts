@@ -1,4 +1,5 @@
 import express, { ErrorRequestHandler } from 'express';
+import 'dotenv/config';
 import cors from 'cors';
 import { connect } from './db/connect';
 import { ProductController } from './controllers/ProductController';

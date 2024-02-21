@@ -63,7 +63,7 @@ export class ProductService {
       limit: limit,
     };
     if (page && limit) {
-      findOptions.offset = page ? (page - 1) * limit : undefined;
+      findOptions.offset = page ? page * limit : undefined;
     }
 
     if (sortId) {
